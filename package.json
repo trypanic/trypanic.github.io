@@ -1,0 +1,44 @@
+{
+	"name": "trypanic-blog",
+	"version": "1.0.0",
+	"description": "Personal blog using the Eleventy site generator",
+	"type": "module",
+	"scripts": {
+		"build": "pnpm dlx @11ty/eleventy",
+		"build-nocolor": "cross-env NODE_DISABLE_COLORS=1 pnpm dlx @11ty/eleventy",
+		"build-ghpages": "pnpm dlx @11ty/eleventy --pathprefix=/trypanic/",
+		"start": "pnpm dlx @11ty/eleventy --serve --quiet",
+		"start-ghpages": "pnpm dlx @11ty/eleventy --pathprefix=/trypanic/ --serve --quiet",
+		"debug": "cross-env DEBUG=Eleventy* pnpm dlx @11ty/eleventy",
+		"debugstart": "cross-env DEBUG=Eleventy* pnpm dlx @11ty/eleventy --serve --quiet",
+		"benchmark": "cross-env DEBUG=Eleventy:Benchmark* pnpm dlx @11ty/eleventy"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/trypanic/blog.git"
+	},
+	"author": {
+		"name": "David Nuñez",
+		"email": "david.nunez.dev@gmail.com",
+		"url": "https://trypanic.github.io"
+	},
+	"license": "MIT",
+	"engines": {
+		"node": ">22"
+	},
+	"bugs": {
+		"url": "https://github.com/trypanic/blog/issues"
+	},
+	"homepage": "https://github.com/trypanic/blog#readme",
+	"devDependencies": {
+		"@11ty/eleventy": "^3.1.2",
+		"@11ty/eleventy-img": "^6.0.4",
+		"@11ty/eleventy-navigation": "^1.0.4",
+		"@11ty/eleventy-plugin-rss": "^2.0.4",
+		"@11ty/eleventy-plugin-syntaxhighlight": "^5.0.1",
+		"clean-css": "^5.3.3",
+		"cross-env": "^7.0.3",
+		"luxon": "^3.6.1",
+		"prismjs": "^1.30.0"
+	}
+}
