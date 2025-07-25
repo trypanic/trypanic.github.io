@@ -1,0 +1,248 @@
+:root {
+	--illustration-color: #3c3836;
+}
+
+/* Base styles: Mobile-first */
+.not-found-container {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	margin: 2em 1em;
+	height: 100%;
+}
+
+.error {
+	display: flex;
+	flex-direction: row;
+	font-family: "Montserrat", sans-serif;
+}
+
+.number {
+	font-weight: 900;
+	font-size: 8rem;
+	line-height: 1;
+	color: var(--illustration-color);
+}
+
+.illustration {
+	position: relative;
+	width: 8rem;
+}
+
+.circle {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	width: 8rem;
+	height: 7.5rem;
+	border-radius: 50%;
+	background-color: var(--illustration-color);
+}
+
+.clip {
+	position: absolute;
+	bottom: 0.3rem;
+	left: 50%;
+	transform: translateX(-50%);
+	overflow: hidden;
+	width: 8.2rem;
+	height: 9rem;
+	border-radius: 0 0 50% 50%;
+}
+
+.paper {
+	position: absolute;
+	bottom: -0.3rem;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 6.5rem;
+	height: 8.8rem;
+	border: 0.3rem solid var(--illustration-color);
+	background-color: white;
+	border-radius: 0.8rem;
+}
+
+.face {
+	position: relative;
+	margin-top: 1.5rem;
+}
+
+.eyes {
+	position: absolute;
+	top: 0;
+	left: 1.6rem;
+	width: 3.5rem;
+	height: 0.8rem;
+}
+
+.eye {
+	position: absolute;
+	bottom: 0;
+	width: 0.6rem;
+	height: 0.6rem;
+	border-radius: 50%;
+	background-color: var(--illustration-color);
+	animation-name: eye;
+	animation-duration: 4s;
+	animation-iteration-count: infinite;
+	animation-timing-function: ease-in-out;
+}
+
+.eye-left {
+	left: 0;
+}
+
+.eye-right {
+	right: 0;
+}
+
+@keyframes eye {
+	0%,
+	50%,
+	54%,
+	100% {
+		height: 0.6rem;
+	}
+	52% {
+		height: 0.1rem;
+	}
+}
+
+.rosyCheeks {
+	position: absolute;
+	top: 1.2rem;
+	width: 0.8rem;
+	height: 0.2rem;
+	border-radius: 50%;
+	background-color: #fdabaf;
+}
+
+.rosyCheeks-left {
+	left: 1rem;
+}
+
+.rosyCheeks-right {
+	right: 1rem;
+}
+
+.mouth {
+	position: absolute;
+	top: 2.5rem;
+	left: 50%;
+	width: 1.2rem;
+	height: 0.2rem;
+	border-radius: 0.1rem;
+	transform: translateX(-50%);
+	background-color: var(--illustration-color);
+}
+
+.text {
+	margin-top: 3rem;
+	font-weight: 300;
+	color: var(--illustration-color);
+	font-size: 1.2em;
+	text-align: center;
+	padding: 0 1em;
+}
+
+.button {
+	margin-top: 3rem;
+	padding: 1rem 2rem;
+	font-size: 1em;
+	font-weight: 700;
+	border-radius: 0.5em;
+	cursor: pointer;
+}
+
+.credits {
+	font-size: 0.825em;
+	text-align: center;
+	color: #494848;
+	margin: 25% 0;
+}
+
+/* Responsive: Tablet and up */
+@media screen and (min-width: 600px) {
+	.number {
+		font-size: 12rem;
+	}
+
+	.illustration {
+		width: 10rem;
+	}
+
+	.circle {
+		width: 10rem;
+		height: 9.4rem;
+	}
+
+	.clip {
+		width: 10.3rem;
+		height: 11rem;
+	}
+
+	.paper {
+		width: 7.5rem;
+		height: 10.4rem;
+	}
+
+	.face {
+		margin-top: 2rem;
+	}
+
+	.eyes {
+		left: 2rem;
+		width: 4rem;
+	}
+
+	.text {
+		font-size: 1.4em;
+	}
+}
+
+/* Responsive: Desktop and up */
+@media screen and (min-width: 900px) {
+	.error {
+		flex-direction: row;
+		justify-content: space-between;
+		text-align: left;
+	}
+
+	.number {
+		font-size: 15rem;
+	}
+
+	.illustration {
+		width: 12.2rem;
+		margin: 0 2.1rem;
+	}
+
+	.circle {
+		width: 12.2rem;
+		height: 11.4rem;
+	}
+
+	.clip {
+		width: 12.5rem;
+		height: 13rem;
+	}
+
+	.paper {
+		width: 9.2rem;
+		height: 12.4rem;
+	}
+
+	.eyes {
+		left: 2.4rem;
+		width: 4.6rem;
+	}
+
+	.text {
+		font-size: 1.5em;
+	}
+
+	.button {
+		font-size: 1.25em;
+	}
+}
