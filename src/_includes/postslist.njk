@@ -1,0 +1,17 @@
+<div class="posts-elements" >
+	{%- for post in postslist | reverse %}
+		<div class="postlist-item{% if post.url == url %} postlist-item-active{% endif %}">
+			<a href="{{ post.url }}">
+				<h2 class="postlist-link">
+					{% if post.data.title %}{{ post.data.title }}
+					{% else %}
+						<code>{{ post.url }}</code>
+					{% endif %}
+				</h2>
+			</a>
+			<time datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate("dd LLLL yyyy") }}</time>
+			<p>{{post.data.description}}</p>
+			<a class="read-more" href="{{ post.url }}">READ MORE &#129034</a>
+		</div>
+	{%- endfor %}
+</div>
