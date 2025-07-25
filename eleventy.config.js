@@ -113,9 +113,6 @@ export default async function (eleventyConfig) {
 		return content;
 	});
 
-	return {
-		pathPrefix: "/trypanic/"
-	};
 }
 
 export const config = {
