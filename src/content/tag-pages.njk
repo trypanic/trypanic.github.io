@@ -1,0 +1,30 @@
+---js
+
+// <script>
+const layout = "layouts/base.njk";
+const pagination = {
+	data: "collections",
+	size: 1,
+	alias: "tag",
+	filter: ["all", "posts"],
+	addAllPagesToCollections: true,
+};
+
+const eleventyExcludeFromCollections = true;
+
+const eleventyComputed = {
+	title: "Tagged '{{ tag }}'",
+	permalink: function(data) {
+		return `/tags/${this.slugify(data.tag)}/`;
+	}
+};
+---
+
+<div class="post-title">
+	<h1>Posts with <span class="highlighted-tag">"{{ tag }}"</span> tag</h1>
+</div>
+{% set postslist = collections[tag] %}
+<div class="generated-tags">
+	{% include "postslist.njk" %}
+</div>
+<p>See <a href="tags.njk">all tags</a>.</p>

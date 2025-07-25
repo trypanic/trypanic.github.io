@@ -1,0 +1,19 @@
+---
+layout: layouts/base.njk
+eleventyNavigation:
+  key: Home
+  order: 1
+---
+
+{% set numberOfLatestPostsToShow = 3 %}
+{% set postslist = collections.posts | head(-1 * numberOfLatestPostsToShow) %}
+{% set postsCount = collections.posts | length %}
+{% set morePosts = postsCount - numberOfLatestPostsToShow %}
+
+{% include "postslist.njk" %}
+
+{% if morePosts > 0 %}
+	<div class="more-posts">
+		<p>{{ morePosts }} more post{% if morePosts != 1 %}s{% endif %} can be found in <a href="archive">the archive</a>.</p>
+	</div>
+{% endif %}
