@@ -3,18 +3,18 @@
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
   <title>trypanic blog</title>
   <subtitle>A software engineering and computer science blog where I share my thoughts: the things I&#39;ve tried and broken, the lessons I’ve learned out of curiosity to reinvent the wheel, understand things more deeply, or just for fun.</subtitle>
-  <link href="https://trypanic.github.io/trypanic/feed/feed.xml" rel="self" />
-  <link href="https://trypanic.github.io/trypanic/" />
+  <link href="https://trypanic.github.io/feed/feed.xml" rel="self" />
+  <link href="https://trypanic.github.io/" />
   <updated>2025-07-26T00:00:00Z</updated>
-  <id>https://trypanic.github.io/trypanic/</id>
+  <id>https://trypanic.github.io/</id>
   <author>
     <name>David Nuñez</name>
   </author>
   <entry>
     <title>Hello World</title>
-    <link href="https://trypanic.github.io/trypanic/blog/hello-world/" />
+    <link href="https://trypanic.github.io/blog/hello-world/" />
     <updated>2025-07-26T00:00:00Z</updated>
-    <id>https://trypanic.github.io/trypanic/blog/hello-world/</id>
+    <id>https://trypanic.github.io/blog/hello-world/</id>
     <content type="html">&lt;p&gt;Although years ago I occasionally wrote on Medium under a different nickname -&lt;a href=&quot;https://linkedin/in/davidenq&quot;&gt;@davidenq&lt;/a&gt; (now used only on my LinkedIn profile) -, I recently decided to start writing again, this time under a new name (&lt;span class=&quot;trypanic&quot;&gt;trypanic&lt;/span&gt;). I also considered whether to continue on &lt;a href=&quot;https://medium.com/@trypanic&quot;&gt;Medium&lt;/a&gt;, but in the end, I decided to create a new, more personalized space. Why? Just for fun!&lt;/p&gt;
 &lt;p&gt;Well, this marks a new adventure, a chance to reinvent myself and create a space to share my thoughts, experiments, research, and anything else I find interesting along the way. I just hope I can be more consistent this time and not forget about it!&lt;/p&gt;
 &lt;h2 id=&quot;are-you-curious&quot;&gt;Are you curious?&lt;/h2&gt;
@@ -25,7 +25,7 @@
 &lt;p&gt;Honestly, it wasn’t my first choice. I came up with many other names, but they were either already taken, hard to remember, or just sounded weird.&lt;/p&gt;
 &lt;p&gt;In fact, I didn’t even think too hard about the meaning of &lt;span class=&quot;trypanic&quot;&gt;trypanic&lt;/span&gt; until I started writing this post. Before that, I just thought it sounded kinda cute and friendly.&lt;/p&gt;
 &lt;h3 id=&quot;curious-about-me&quot;&gt;Curious about me?&lt;/h3&gt;
-&lt;p&gt;Click &lt;a href=&quot;https://trypanic.github.io/trypanic/about&quot;&gt;here&lt;/a&gt; to learn more.&lt;/p&gt;
+&lt;p&gt;Click &lt;a href=&quot;https://trypanic.github.io/about&quot;&gt;here&lt;/a&gt; to learn more.&lt;/p&gt;
 &lt;br&gt;
 &lt;h2 id=&quot;final-words&quot;&gt;Final words!&lt;/h2&gt;
 &lt;p&gt;Stay tuned for posts about software engineering, computer science, artificial intelligence, and more. I just hope I can be more consistent this time and not forget about it!&lt;/p&gt;
