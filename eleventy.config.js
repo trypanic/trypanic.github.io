@@ -15,9 +15,10 @@ const WATCHED_CSS = `${PUBLIC_CSS_DIR}/**/*.css`;
 const WATCHED_IMAGES = `${CONTENT_DIR}/**/*.{svg,webp,png,jpg,jpeg,gif}`;
 const FEED_STYLESHEET = 'pretty-atom-feed.xsl';
 const FEED_OUTPUT_PATH = '/feed/feed.xml';
-const STYLES_TO_MINIFY = ['404.css'];
+const STYLES_TO_MINIFY = ['index.css'];
 
 export default async function (eleventyConfig) {
+
 	// Clean CSS output directory
 	fs.rmSync(DIST_CSS_DIR, { recursive: true, force: true });
 	fs.mkdirSync(DIST_CSS_DIR, { recursive: true });
@@ -98,6 +99,18 @@ export default async function (eleventyConfig) {
 		const rawCSS = fs.readFileSync(cssFile, "utf-8");
 		const minified = new CleanCSS({}).minify(rawCSS);
 		return minified.styles;
+	});
+
+
+	// highlight the trypanic name
+	eleventyConfig.addTransform("highlightParagraphs", function (content, outputPath) {
+		// Only process HTML output
+		if (outputPath && outputPath.endsWith(".html")) {
+
+			return content.replaceAll(/\b(?<![\w@\"\'\/\[\{])\btrypanic\b(?![\w\"\'\/\]\}])\b/g, '<span class="trypanic">trypanic</span>');
+		}
+
+		return content;
 	});
 }
 
