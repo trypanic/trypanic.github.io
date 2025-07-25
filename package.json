@@ -6,9 +6,9 @@
 	"scripts": {
 		"build": "pnpm dlx @11ty/eleventy",
 		"build-nocolor": "cross-env NODE_DISABLE_COLORS=1 pnpm dlx @11ty/eleventy",
-		"build-ghpages": "pnpm dlx @11ty/eleventy --pathprefix=/trypanic/",
+		"build-ghpages": "pnpm dlx @11ty/eleventy",
 		"start": "pnpm dlx @11ty/eleventy --serve --quiet",
-		"start-ghpages": "pnpm dlx @11ty/eleventy --pathprefix=/trypanic/ --serve --quiet",
+		"start-ghpages": "pnpm dlx @11ty/eleventy --serve --quiet",
 		"debug": "cross-env DEBUG=Eleventy* pnpm dlx @11ty/eleventy",
 		"debugstart": "cross-env DEBUG=Eleventy* pnpm dlx @11ty/eleventy --serve --quiet",
 		"benchmark": "cross-env DEBUG=Eleventy:Benchmark* pnpm dlx @11ty/eleventy"
