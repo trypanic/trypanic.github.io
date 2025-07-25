@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+		
+		<url>
+			<loc>https://trypanic.github.io/trypanic/about/</loc>
+			<lastmod>2025-07-25</lastmod>
+		</url>
+		
+		<url>
+			<loc>https://trypanic.github.io/trypanic/archive/</loc>
+			<lastmod>2025-07-25</lastmod>
+		</url>
+		
+		<url>
+			<loc>https://trypanic.github.io/trypanic/</loc>
+			<lastmod>2025-07-25</lastmod>
+		</url>
+		
+		<url>
+			<loc>https://trypanic.github.io/trypanic/tags/</loc>
+			<lastmod>2025-07-25</lastmod>
+		</url>
+		
+		<url>
+			<loc>https://trypanic.github.io/trypanic/feed/feed.xml</loc>
+			<lastmod>2025-07-25</lastmod>
+		</url>
+		
+		<url>
+			<loc>https://trypanic.github.io/trypanic/blog/hello-world/</loc>
+			<lastmod>2025-07-26</lastmod>
+		</url>
+</urlset>
