@@ -107,7 +107,7 @@ export default async function (eleventyConfig) {
 		// Only process HTML output
 		if (outputPath && outputPath.endsWith(".html")) {
 
-			return content.replaceAll(/\b(?<![\w@\"\'\/\[\{])\btrypanic\b(?![\w\"\'\/\]\}])\b/g, '<span class="trypanic">trypanic</span>');
+			return content.replaceAll(/\b(?<![\w@"'/[{])\btrypanic\b(?![\w"'/\]}])\b/g, '<span class="trypanic">trypanic</span>');
 		}
 
 		return content;
