@@ -23,9 +23,6 @@
 		"url": "https://trypanic.github.io"
 	},
 	"license": "MIT",
-	"engines": {
-		"node": ">22"
-	},
 	"bugs": {
 		"url": "https://github.com/trypanic/blog/issues"
 	},

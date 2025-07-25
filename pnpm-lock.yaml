@@ -32,9 +32,6 @@ importers:
       luxon:
         specifier: ^3.6.1
         version: 3.7.1
-      markdown-it:
-        specifier: ^14.1.0
-        version: 14.1.0
       prismjs:
         specifier: ^1.30.0
         version: 1.30.0
