@@ -6,12 +6,12 @@ A personal blog built using Eleventy ([11ty](https://www.11ty.dev/)), based on t
 
 This project started with [eleventy-base-blog](https://github.com/11ty/eleventy-base-blog) and evolved into a custom blog system with a redesigned layout, streamlined folder structure, minified CSS output, and improved responsiveness.
 
-🎨 Gruvbox color palette design
-🔧 Custom folder structure for better clarity and separation of concerns
-💡 Responsive design with custom layouts and typography
-🧹 Minified CSS output using `clean-css` during the build process
-🧼 Removed unused base files to simplify the codebase
-🌐 Custom and fancy `404` page
+- 🎨 Gruvbox color palette design
+- 🔧 Custom folder structure for better clarity and separation of concerns
+- 💡 Responsive design with custom layouts and typography
+- 🧹 Minified CSS output using `clean-css` during the build process
+- 🧼 Removed unused base files to simplify the codebase
+- 🌐 Custom and fancy `404` page
 
 ## Project Structure
 
