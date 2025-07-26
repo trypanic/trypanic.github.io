@@ -11,7 +11,11 @@
 			</a>
 			<time datetime="{{ post.date | htmlDateString }}">{{ post.date | readableDate("dd LLLL yyyy") }}</time>
 			<p>{{post.data.description}}</p>
-			<a class="read-more" href="{{ post.url }}">READ MORE &#129034</a>
+			<div class="container-button">
+				<a class="read-more" href="{{ post.url }}">
+					read more
+				</a>
+			</div>
 		</div>
 	{%- endfor %}
 </div>
