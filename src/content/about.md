@@ -5,15 +5,17 @@ eleventyNavigation:
   order: 3
 ---
 
-# About
+# About me
 
-Hi there! I'm David.
+<br />
 
-Over the years, I’ve worked from frontend and backend development to infrastructure. I've held roles like Developer, Architect, DevOps, MLOps, and platform engineering. I have a kwnoledge in networking, with an undergrad in the field, so I’m very familiar with Linux systems, networking and protocols.
+Hello, I'm David and this is my journey as a Software Engineer
 
-I’m interested in distributed systems (mostly with Go), Compilers, MLOps, LLMs, and AI agents. I enjoy digging into new technologies and figuring things out as I go, whether it's through side or open source projects, or just experimenting.
+I didn't start out as a software developer, in fact, my journey began with a degree in Networks and Telecommunications. That's where I first got into Linux systems, networking, and protocolos. While I was still studying for my bachelor's degree, I started working as a freelancer. Over the past 12 years, I've worked across frontend and backend development, as well infrastructure. I've held roles like Developer, Architect, DevOps, MLOps, and Platform Engineer.
 
-This blog is where I share what I’m learning and whatever else I find interesting along the way. I’ll either try... or panic — usually both 🤣
+I'm interested in distributed systems (mostly with Go), Compilers, MLOps, LLMs, and AI agents. I enjoy digging into new technologies and figuring things out as I go, whether it's through side or open source projects, or just experimenting.
+
+This blog is where I share what I'm learning and whatever else I find interesting along the way. I'll either try... or panic, usually both 🤣
 
 <br />
 
