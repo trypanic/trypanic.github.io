@@ -20,7 +20,7 @@
 	--color-light: #faf9f5;
 	--color-dark: #1d2021;
 	--color-dark-strong: #3c3836;
-	--color-text-light: #faf9f5;
+	--color-text-light: #ebdbb2;
 	--color-text-dark: #282828;
 
 	--color-blue: #076678;
@@ -28,6 +28,7 @@
 	--color-aqua: #427b58;
 	--color-orange-light: rgba(214, 93, 14, 0.25);
 	--color-muted: #665c54;
+	--color-green: #b8bb26;
 
 	/* ========================
 	   Theme Tokens
@@ -47,7 +48,8 @@
 	--time-color: var(--color-blue);
 
 	--code-bg: var(--background-dark);
-	--code-text-color: var(--color-blue);
+	--p-code-text-color: var(--color-purple);
+	--pre-code-text-color: var(--color-text-light);
 
 	--blockquote-bg: var(--color-orange-light);
 	--blockquote-text: var(--background-dark);
@@ -101,7 +103,17 @@ body {
 
 img {
 	max-width: 100%;
+	display: block;
+	float: none;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 1em;
 }
+p > img {
+	margin: auto;
+	padding: 0;
+}
+
 img[width][height] {
 	height: auto;
 }
@@ -356,15 +368,21 @@ code[class*="language-"],
 pre[class*="language-"] {
 	font-family: var(--font-family-monospace) !important;
 }
+
+code[class*="language-text"] {
+	color: var(--pre-code-text-color) !important;
+}
 pre {
 	display: block;
 	background: var(--code-bg);
-	color: var(--code-text-color);
+	color: var(--pre-code-text-color);
 	border-radius: 4px;
 	font-size: 12px;
+	font-weight: 500;
 }
+
 p > code {
-	color: var(--code-text-color);
+	color: var(--p-code-text-color);
 	font-weight: 700;
 	font-size: 0.9em;
 }
@@ -424,6 +442,37 @@ pre:not([class*="language-"]) {
 	margin-top: 1em;
 }
 
+/* Mermaid */
+
+.mermaid {
+	background: transparent;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+[id^="mermaid-"] {
+	font-family: var(--font-family-monospace) !important;
+}
+
+[id^="mermaid-"] text tspan,
+.messageText {
+	font-size: 12px !important;
+}
+
+[id^="mermaid-"] .actor,
+[id^="mermaid-"] .node rect,
+[id^="mermaid-"] .node circle,
+[id^="mermaid-"] .node ellipse,
+[id^="mermaid-"] .node polygon,
+[id^="mermaid-"] .node path,
+[id^="mermaid-"] line {
+	fill: var(--theme-bg) !important;
+	stroke: var(--background-dark) !important;
+	stroke-width: 1px !important;
+	font-size: 12px !important;
+}
+
 /* =============================
    Media Queries (Mobile First)
    ============================= */
@@ -435,6 +484,9 @@ pre:not([class*="language-"]) {
 }
 
 @media (min-width: 768px) {
+	body {
+		font-size: 14px;
+	}
 	.nav {
 		flex-direction: row;
 		justify-content: flex-start;
