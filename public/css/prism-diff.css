@@ -1,143 +1,149 @@
-/**
- * Gruvbox dark theme
- *
- * Adapted from a theme based on:
- * Vim Gruvbox dark Theme (https://github.com/morhetz/gruvbox)
- *
- * @author Azat S. <to@azat.io>
- * @version 1.0
- */
+/* Gruvbox Dark colors */
+:root {
+	--bg: #1d2021;
+	--fg: #ebdbb2;
+	--dark0_hard: #1d2021;
+	--dark0: #282828;
+	--dark1: #3c3836;
+	--dark2: #504945;
+	--dark3: #665c54;
+	--dark4: #7c6f64;
+	--gray: #928374;
+	--light0_hard: #f9f5d7;
+	--light0: #ebdbb2;
+	--light1: #ebdbb2;
+	--light2: #d5c4a1;
+	--light3: #bdae93;
+	--light4: #a89984;
+	--bright_red: #fb4934;
+	--bright_green: #b8bb26;
+	--bright_yellow: #fabd2f;
+	--bright_blue: #83a598;
+	--bright_purple: #d3869b;
+	--bright_aqua: #8ec07c;
+	--bright_orange: #fe8019;
+}
 
-code[class*="language-"],
+/* Base styles */
+.token {
+	color: var(--light0_hard);
+	font-size: 12px;
+	font-weight: 500;
+}
+
+/* Background */
 pre[class*="language-"] {
-	color: #ebdbb2; /* fg1 / fg */
-	font-family: Consolas, Monaco, "Andale Mono", monospace;
-	direction: ltr;
-	text-align: left;
-	white-space: pre;
-	word-spacing: normal;
-	word-break: normal;
-	line-height: 1.5;
-	font-size: 0.925em;
-	-moz-tab-size: 2;
-	-o-tab-size: 2;
-	tab-size: 2;
-
-	-webkit-hyphens: none;
-	-moz-hyphens: none;
-	-ms-hyphens: none;
-	hyphens: none;
-}
-
-pre[class*="language-"]::-moz-selection,
-pre[class*="language-"] ::-moz-selection,
-code[class*="language-"]::-moz-selection,
-code[class*="language-"] ::-moz-selection {
-	color: #fbf1c7; /* fg0 */
-	background: #7c6f64; /* bg4 */
-}
-
-pre[class*="language-"]::selection,
-pre[class*="language-"] ::selection,
-code[class*="language-"]::selection,
-code[class*="language-"] ::selection {
-	color: #fbf1c7; /* fg0 */
-	background: #7c6f64; /* bg4 */
-}
-
-/* Code blocks */
-pre[class*="language-"] {
+	background: var(--bg);
+	color: var(--light0_hard);
 	padding: 1em;
-	margin: 0.5em 0;
-	overflow: auto;
-}
-
-:not(pre) > code[class*="language-"],
-pre[class*="language-"] {
-	background: #1d2021; /* bg0_h */
-}
-
-/* Inline code */
-:not(pre) > code[class*="language-"] {
-	padding: 0.1em;
 	border-radius: 0.3em;
+	overflow: auto;
+	font-feature-settings: "liga" 0; /* disable ligatures */
 }
 
+/* Comments */
 .token.comment,
 .token.prolog,
-.token.cdata {
-	color: #a89984; /* fg4 / gray1 */
-}
-
-.token.delimiter,
-.token.boolean,
-.token.keyword,
-.token.selector,
-.token.important,
-.token.atrule {
-	color: #fb4934; /* red2 */
-}
-
-.token.operator,
-.token.punctuation,
-.token.attr-name {
-	color: #a89984; /* fg4 / gray1 */
-}
-
-.token.tag,
-.token.tag .punctuation,
 .token.doctype,
-.token.builtin {
-	color: #fabd2f; /* yellow2 */
-}
-
-.token.entity,
-.token.number,
-.token.symbol {
-	color: #d3869b; /* purple2 */
-}
-
-.token.property,
-.token.constant,
-.token.variable {
-	color: #fb4934; /* red2 */
-}
-
-.token.string,
-.token.char {
-	color: #b8bb26; /* green2 */
-}
-
-.token.attr-value,
-.token.attr-value .punctuation {
-	color: #a89984; /* fg4 / gray1 */
-}
-
-.token.url {
-	color: #b8bb26; /* green2 */
-	text-decoration: underline;
-}
-
-.token.function {
-	color: #fabd2f; /* yellow2 */
-}
-
-.token.regex {
-	background: #b8bb26; /* green2 */
-}
-
-.token.bold {
-	font-weight: bold;
-}
-
-.token.italic {
+.token.cdata {
+	color: var(--dark4);
 	font-style: italic;
 }
 
-.token.inserted {
-	background: #a89984; /* fg4 / gray1 */
+/* Strings (raw and interpreted) */
+.token.string {
+	color: var(--bright_green);
 }
 
-.token.deleted {
-	background: #fb4934; /* red2 */
+/* Keywords */
+.token.keyword {
+	color: var(--bright_red);
+}
+
+/* Types */
+.token.type {
+	color: var(--bright_aqua);
+}
+
+/* Functions */
+.token.function {
+	color: var(--bright_aqua);
+}
+
+/* Boolean literals */
+.token.boolean {
+	color: var(--bright_purple);
+}
+
+/* Nil literal */
+.token.nil {
+	color: var(--bright_orange);
+}
+
+/* Numbers */
+.token.number {
+	color: var(--bright_purple);
+}
+
+/* Operators */
+.token.operator {
+	color: var(--light0);
+}
+
+/* Special operators :=, <-, -> */
+.token.operator-assignment {
+	color: var(--light0);
+}
+.token.operator-channel-left,
+.token.operator-channel-right {
+	color: var(--bright_orange);
+}
+
+/* Punctuation */
+.token.punctuation {
+	color: var(--light0);
+}
+
+/* Struct tags */
+.token.tag {
+	color: var(--bright_blue);
+}
+
+/* Interface method names */
+.token.interface-method .function {
+	color: var(--bright_aqua);
+}
+
+/* Map, slice, channel types */
+.token.map .keyword,
+.token.slice .punctuation,
+.token.channel .keyword {
+	color: var(--light0);
+}
+
+.token.map .type,
+.token.slice .type,
+.token.channel .type {
+	color: var(--bright_aqua);
+}
+
+/* Identifiers */
+.token.identifier {
+	color: var(--bright_blue);
+}
+
+.token.namespace {
+	color: var(--light2);
+}
+
+.token.structure-name,
+.token.class-name {
+	color: var(--bright_purple);
+}
+
+.token.property {
+	color: var(--bright_yellow);
+}
+.token.namespace {
+	opacity: 1;
 }
