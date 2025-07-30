@@ -54,6 +54,8 @@
 	--blockquote-bg: var(--color-orange-light);
 	--blockquote-text: var(--background-dark);
 
+	--background-summary-color: var(--color-text-dark);
+
 	/* ========================
 	   Branding / Components
 	======================== */
@@ -359,45 +361,6 @@ blockquote {
 	color: var(--blockquote-text);
 	padding: 1.5em;
 	border-radius: 0.3em;
-}
-
-/* Code */
-pre,
-code,
-code[class*="language-"],
-pre[class*="language-"] {
-	font-family: var(--font-family-monospace) !important;
-}
-
-code[class*="language-text"] {
-	color: var(--pre-code-text-color) !important;
-}
-pre {
-	display: block;
-	background: var(--code-bg);
-	color: var(--pre-code-text-color);
-	border-radius: 4px;
-	font-size: 12px;
-	font-weight: 500;
-}
-
-p > code {
-	color: var(--p-code-text-color);
-	font-weight: 700;
-	font-size: 0.9em;
-}
-pre:not([class*="language-"]) {
-	margin: 0.5em 0;
-	line-height: 1.375;
-	tab-size: 2;
-	hyphens: none;
-	direction: ltr;
-	text-align: left;
-	white-space: pre;
-	word-spacing: normal;
-	word-break: normal;
-	overflow-x: auto;
-	padding: 1em;
 }
 
 /* Panic style */

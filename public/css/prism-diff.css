@@ -31,16 +31,6 @@
 	font-weight: 500;
 }
 
-/* Background */
-pre[class*="language-"] {
-	background: var(--bg);
-	color: var(--light0_hard);
-	padding: 1em;
-	border-radius: 0.3em;
-	overflow: auto;
-	font-feature-settings: "liga" 0; /* disable ligatures */
-}
-
 /* Comments */
 .token.comment,
 .token.prolog,
@@ -146,4 +136,51 @@ pre[class*="language-"] {
 }
 .token.namespace {
 	opacity: 1;
+}
+
+/* Code */
+pre,
+code,
+code[class*="language-"],
+pre[class*="language-"] {
+	font-family: var(--font-family-monospace) !important;
+	font-size: 12px;
+	font-weight: 500;
+	background: var(--code-bg);
+}
+
+p code {
+	background: transparent;
+	color: var(--p-code-text-color);
+}
+
+pre code {
+	display: block;
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+	padding: 2em;
+}
+
+details {
+	margin: 1em 0;
+}
+
+summary {
+	background: var(--bright_blue);
+	color: var(--dark0);
+	padding: 1em;
+	font-weight: 700;
+	text-transform: lowercase;
+	font-family: var(--font-family-base);
+	font-size: 0.925em;
+	border-radius: 5px;
+}
+
+details pre {
+	border-radius: 0 0 5px 5px;
+}
+
+details:open > summary {
+	border-bottom-left-radius: 0;
+	border-bottom-right-radius: 0;
 }
