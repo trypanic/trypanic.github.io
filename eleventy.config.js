@@ -1,24 +1,30 @@
-import { IdAttributePlugin, InputPathToUrlTransformPlugin, HtmlBasePlugin } from "@11ty/eleventy";
+import {
+	IdAttributePlugin,
+	InputPathToUrlTransformPlugin,
+	HtmlBasePlugin,
+} from "@11ty/eleventy";
 import { feedPlugin } from "@11ty/eleventy-plugin-rss";
 import pluginSyntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
+import pluginMermaid from "@kevingimbel/eleventy-plugin-mermaid";
+import { golangSyntax } from "./src/_config/custom-syntax-highlight.js";
+
 import pluginNavigation from "@11ty/eleventy-navigation";
 import pluginFilters from "./src/_config/filters.js";
-import CleanCSS from 'clean-css';
-import fs from 'fs';
-import path from 'path';
+import CleanCSS from "clean-css";
+import fs from "fs";
+import path from "path";
 
-const DIST_CSS_DIR = '_site/css';
-const PUBLIC_CSS_DIR = 'public/css';
-const CONTENT_DIR = 'src/content';
+const DIST_CSS_DIR = "_site/css";
+const PUBLIC_CSS_DIR = "public/css";
+const CONTENT_DIR = "src/content";
 const BLOG_IMAGES_GLOB = `${CONTENT_DIR}/blog/**/*.{jpg,jpeg,png,gif,webp,avif,svg}`;
 const WATCHED_CSS = `${PUBLIC_CSS_DIR}/**/*.css`;
 const WATCHED_IMAGES = `${CONTENT_DIR}/**/*.{svg,webp,png,jpg,jpeg,gif}`;
-const FEED_STYLESHEET = 'pretty-atom-feed.xsl';
-const FEED_OUTPUT_PATH = '/feed/feed.xml';
-const STYLES_TO_MINIFY = ['index.css'];
+const FEED_STYLESHEET = "pretty-atom-feed.xsl";
+const FEED_OUTPUT_PATH = "/feed/feed.xml";
+const STYLES_TO_MINIFY = ["index.css"];
 
 export default async function (eleventyConfig) {
-
 	// Clean CSS output directory
 	fs.rmSync(DIST_CSS_DIR, { recursive: true, force: true });
 	fs.mkdirSync(DIST_CSS_DIR, { recursive: true });
@@ -35,15 +41,33 @@ export default async function (eleventyConfig) {
 	eleventyConfig.addPassthroughCopy(BLOG_IMAGES_GLOB);
 
 	// Watch targets
+	eleventyConfig.addWatchTarget(`${CONTENT_DIR}/blog`);
 	eleventyConfig.addWatchTarget(WATCHED_CSS);
 	eleventyConfig.addWatchTarget(WATCHED_IMAGES);
 
 	// Plugins
-	eleventyConfig.addPlugin(pluginSyntaxHighlight, { preAttributes: { tabindex: 0 } });
+	eleventyConfig.addPlugin(pluginSyntaxHighlight, {
+		lineSeparator: "\n",
+		templateFormats: ["*"],
+		errorOnInvalidLanguage: false,
+		preAttributes: {
+			tabindex: 0,
+			"data-language": ({ language }) => language,
+		},
+		init: function ({ Prism }) {
+			Prism.languages.golang = golangSyntax;
+		},
+	});
 	eleventyConfig.addPlugin(pluginNavigation);
 	eleventyConfig.addPlugin(HtmlBasePlugin);
 	eleventyConfig.addPlugin(InputPathToUrlTransformPlugin);
 	eleventyConfig.addPlugin(pluginFilters);
+	eleventyConfig.addPlugin(pluginMermaid, {
+		mermaid_config: {
+			startOnLoad: true,
+			theme: "neutral",
+		},
+	});
 
 	// ID Plugin
 	eleventyConfig.addPlugin(IdAttributePlugin);
@@ -101,22 +125,25 @@ export default async function (eleventyConfig) {
 		return minified.styles;
 	});
 
-
 	// highlight the trypanic name
-	eleventyConfig.addTransform("highlightParagraphs", function (content, outputPath) {
-		// Only process HTML output
-		if (outputPath && outputPath.endsWith(".html")) {
+	eleventyConfig.addTransform(
+		"highlightParagraphs",
+		function (content, outputPath) {
+			// Only process HTML output
+			if (outputPath && outputPath.endsWith(".html")) {
+				return content.replaceAll(
+					/\b(?<![\w@"'/[{])\btrypanic\b(?![\w"'/\]}])\b/g,
+					'<span class="trypanic">trypanic</span>',
+				);
+			}
 
-			return content.replaceAll(/\b(?<![\w@"'/[{])\btrypanic\b(?![\w"'/\]}])\b/g, '<span class="trypanic">trypanic</span>');
-		}
-
-		return content;
-	});
-
+			return content;
+		},
+	);
 }
 
 export const config = {
-	templateFormats: ["md", "njk", "html", "liquid", "11ty.js"],
+	templateFormats: ["md", "njk", "html", "liquid", "11ty.js", "mdx"],
 	markdownTemplateEngine: "njk",
 	htmlTemplateEngine: "njk",
 	dir: {
