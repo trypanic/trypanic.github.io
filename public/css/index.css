@@ -1,12 +1,11 @@
-@import url("https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Anonymous+Pro:ital,wght@0,400;0,700;1,400;1,700&family=Merriweather:ital,opsz,wght@0,18..144,300..900;1,18..144,300..900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 :root {
 	/* ========================
 	   Typography
 	======================== */
 	--font-family-base: "Montserrat", -apple-system, system-ui, sans-serif;
 	--font-family-serif: "Merriweather", -apple-system, system-ui, serif;
-	--font-family-monospace: "Fira Code", monospace;
+	--font-family-monospace: "Anonymous Pro", monospace;
 
 	--font-size: 16px;
 	--line-height: 1.5;
@@ -27,6 +26,7 @@
 	--color-purple: #8f3f71;
 	--color-aqua: #427b58;
 	--color-orange-light: rgba(214, 93, 14, 0.25);
+	--color-orange: #af3a03;
 	--color-muted: #665c54;
 	--color-green: #b8bb26;
 
@@ -48,7 +48,7 @@
 	--time-color: var(--color-blue);
 
 	--code-bg: var(--background-dark);
-	--p-code-text-color: var(--color-purple);
+	--p-code-text-color: var(--color-orange);
 	--pre-code-text-color: var(--color-text-light);
 
 	--blockquote-bg: var(--color-orange-light);
@@ -197,6 +197,10 @@ header div {
 	margin-top: 1em;
 }
 
+ul li,
+ol li {
+	line-height: 2;
+}
 /* Logo */
 .logo {
 	display: flex;
@@ -336,7 +340,7 @@ header div {
 	margin: 0.8em 0;
 }
 #main p {
-	padding: 0.25em 0;
+	padding: 0.5em 0;
 }
 
 /* Next section */

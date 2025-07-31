@@ -27,8 +27,6 @@
 /* Base styles */
 .token {
 	color: var(--light0_hard);
-	font-size: 12px;
-	font-weight: 500;
 }
 
 /* Comments */
@@ -143,15 +141,16 @@ pre,
 code,
 code[class*="language-"],
 pre[class*="language-"] {
-	font-family: var(--font-family-monospace) !important;
-	font-size: 12px;
-	font-weight: 500;
+	font-family: var(--font-family-monospace);
 	background: var(--code-bg);
+	line-height: 1.25;
 }
 
 p code {
 	background: transparent;
 	color: var(--p-code-text-color);
+	font-family: var(--font-family-base);
+	font-weight: 500;
 }
 
 pre code {
@@ -172,7 +171,6 @@ summary {
 	font-weight: 700;
 	text-transform: lowercase;
 	font-family: var(--font-family-base);
-	font-size: 0.925em;
 	border-radius: 5px;
 }
 
