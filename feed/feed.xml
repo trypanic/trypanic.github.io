@@ -11,16 +11,57 @@
     <name>David Nuñez</name>
   </author>
   <entry>
-    <title>How to Build an Basic CLI AI Agent with Golang</title>
+    <title>How to Build a Basic CLI AI Agent with Golang - Part 1</title>
     <link href="https://trypanic.github.io/blog/ai-agents/introduction/" />
     <updated>2025-07-30T00:00:00Z</updated>
     <id>https://trypanic.github.io/blog/ai-agents/introduction/</id>
-    <content type="html">&lt;h1 id=&quot;introduction&quot;&gt;Introduction&lt;/h1&gt;
-&lt;p&gt;This post is the first in a series where I&#39;ll share my personal journey of learning how to build an AI Agent from scratch using Golang. It&#39;s heavily inspired by &lt;a href=&quot;https://ampcode.com/how-to-build-an-agent&quot;&gt;How to Build an Agent&lt;/a&gt; by &lt;a href=&quot;https://thorstenball.com/&quot;&gt;Thorsten Ball&lt;/a&gt;, but with a different perspective and target: a more general-purpose agent rather than one focused specifically on code editing.&lt;/p&gt;
-&lt;p&gt;We&#39;ll begin with basic interactions with a large language model (LLM) and gradually progress toward a more complete AI Agent by incorporating tools, memory, MCP (Model Context Protocol), and more.&lt;/p&gt;
+    <content type="html">&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#introduction&quot;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#what-is-an-ai-agent-&quot;&gt;What is an AI Agent?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#a-simple-interaction-with-an-llm--one-input--one-output-&quot;&gt;A Simple Interaction with an LLM (One Input, One Output)&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#observations&quot;&gt;Observations&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#improving-user-experience-with-streaming&quot;&gt;Improving User Experience with Streaming&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#what-is-streaming-&quot;&gt;What is Streaming?&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#why-this-still-isn-t-an-ai-agent&quot;&gt;Why This Still Isn&#39;t an AI Agent&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#what-s-next&quot;&gt;What&#39;s Next&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;introduction&quot;&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;This post is the first in a series where I&#39;ll share my personal journey of learning how to build an AI Agent from scratch using Golang. It&#39;s heavily inspired by &lt;a href=&quot;https://ampcode.com/how-to-build-an-agent&quot;&gt;How to Build an Agent&lt;/a&gt; by &lt;a href=&quot;https://thorstenball.com/&quot;&gt;Thorsten Ball&lt;/a&gt;, but with a different perspective and target: evidently, a AI specific-purpose agent.&lt;/p&gt;
+&lt;p&gt;We&#39;ll begin with basic interactions with a large language model (LLM) and gradually progress toward a more complete AI Agent by incorporating conversation memory, tools, decision-making capabilities, MCP (Model Context Protocol), and more.&lt;/p&gt;
 &lt;p&gt;My goal is to share everything I&#39;ve learned about how AI agents work under the hood, and to make that understanding accessible to others who are interested in the same topic.&lt;/p&gt;
+&lt;p&gt;Below you can see a general roadmap to give you an idea of what I&#39;ll be writing about.&lt;/p&gt;
+&lt;pre class=&quot;mermaid&quot;&gt;graph TD
+    A[Basic LLM Interaction] --&amp;#x3E; B[Streaming for Better UX]
+    B --&amp;#x3E; C[Conversation Memory]
+    C --&amp;#x3E; D[Custom Tool Integration]
+    D --&amp;#x3E; E[Decision Making Logic]
+    E --&amp;#x3E; F[MCP Integration]
+    F --&amp;#x3E; G[Complete AI Agent]
+
+    A1[&amp;#x274C; Single request/response&amp;#x3C;br/&amp;#x3E;&amp;#x274C; No state&amp;#x3C;br/&amp;#x3E;&amp;#x274C; Blocking behavior] --&amp;#x3E; A
+    B1[&amp;#x2705; Real-time responses&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Better user experience&amp;#x3C;br/&amp;#x3E;&amp;#x274C; Still no agent behavior] --&amp;#x3E; B
+    C1[&amp;#x2705; Remembers conversations&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Context awareness&amp;#x3C;br/&amp;#x3E;&amp;#x274C; Can&amp;#x27;t take actions] --&amp;#x3E; C
+    D1[&amp;#x2705; Can use external tools&amp;#x3C;br/&amp;#x3E;&amp;#x2705; File operations, APIs&amp;#x3C;br/&amp;#x3E;&amp;#x274C; No smart tool selection] --&amp;#x3E; D
+    E1[&amp;#x2705; Chooses appropriate tools&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Goal-oriented behavior&amp;#x3C;br/&amp;#x3E;&amp;#x274C; Limited external integrations] --&amp;#x3E; E
+    F1[&amp;#x2705; Rich external integrations&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Database, APIs, services&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Standardized protocols] --&amp;#x3E; F
+    G1[&amp;#x2705; Full autonomy&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Complex task completion&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Learning and adaptation] --&amp;#x3E; G
+
+    style A fill:#ffebee
+    style B fill:#fff3e0
+    style C fill:#e8f5e8
+    style D fill:#e3f2fd
+    style E fill:#f3e5f5
+    style F fill:#e0f2f1
+    style G fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+&lt;/pre&gt;
 &lt;br&gt;
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;Disclaimer&lt;/em&gt;&lt;/strong&gt;: I&#39;m not an expert in AI Agents, LLMs, ML, and AI in general. So, this series is based on my personal learning journey, and everything I share comes from reading, research, and hands-on experimentation. Use it as a learning resource. The code examples is just for educational purposes and are not production-ready.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;Disclaimer&lt;/em&gt;&lt;/strong&gt;: I&#39;m not an expert in AI Agents, LLMs, ML, and AI in general. This series is based on my personal learning journey, and everything I share comes from reading, research, and hands-on experimentation. Use it as a learning resource. The code examples are for educational purposes and are not production-ready.&lt;/p&gt;
 &lt;br&gt;
 &lt;p&gt;If you see any mistakes or have suggestions for improvement, I&#39;d really appreciate your feedback!&lt;/p&gt;
 &lt;h2 id=&quot;what-is-an-ai-agent&quot;&gt;What is an AI Agent?&lt;/h2&gt;
@@ -32,23 +73,20 @@
 &lt;blockquote&gt;
 &lt;p&gt;&amp;quot;Agent&amp;quot; can be defined in several ways. Some customers define agents as fully autonomous systems that operate independently over extended periods, using various tools to accomplish complex tasks. Others use the term to describe more prescriptive implementations that follow predefined workflows.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;Both are very clear explanations of what an AI Agent is. But to truly understand it in depth, what&#39;s going on under the hood, let&#39;s break it all down from scratch. After exploring the concepts step by step, I&#39;ll share my own perspective. Then, you&#39;ll have enough context to define what an AI Agent really means in your own words.&lt;/p&gt;
-&lt;h2 id=&quot;a-simple-interaction-with-a-llm-one-input-one-output&quot;&gt;A simple interaction with a LLM (one input, one output)&lt;/h2&gt;
-&lt;p&gt;Let&#39;s start with the most basic form of interaction: you send a message to a LLM through Anthropic API using the Anthropic SDK (you can use your preferred programming language). The API responds with a generated message.&lt;/p&gt;
+&lt;p&gt;Both are clear explanations of what an AI Agent is. But to truly understand what&#39;s happening under the hood, let&#39;s break it all down from scratch. After exploring the concepts step by step, I&#39;ll share my own perspective. Then, you&#39;ll have enough context to define what an AI Agent really means in your own words.&lt;/p&gt;
+&lt;h2 id=&quot;a-simple-interaction-with-an-llm-one-input-one-output&quot;&gt;A Simple Interaction with an LLM (One Input, One Output)&lt;/h2&gt;
+&lt;p&gt;Let&#39;s start with the most basic form of interaction: you send a message to an LLM through the Anthropic API using the Anthropic SDK. The API responds with a generated message. Something like this:&lt;/p&gt;
 &lt;pre class=&quot;mermaid&quot;&gt;sequenceDiagram
-   Client (Anthropic SDK)-&amp;#x3E;&amp;#x3E;Anthropic API: prompt
-   Anthropic API--&amp;#x3E;&amp;#x3E;Client (Anthropic SDK): response
+    Client (Anthropic SDK)-&amp;#x3E;&amp;#x3E;Anthropic API: prompt
+    Anthropic API--&amp;#x3E;&amp;#x3E;Client (Anthropic SDK): response
 &lt;/pre&gt;
 &lt;p&gt;For example, you might send: &lt;code&gt;&amp;quot;Hello, how are you?&amp;quot;&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;And the model might respond with: &lt;code&gt;&amp;quot;I&#39;m doing well, thank you!&amp;quot;&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;Here&#39;s what that looks like in Go:&lt;/p&gt;
 &lt;details&gt;
 &lt;summary&gt;Golang Code&lt;/summary&gt;
-&lt;pre class=&quot;language-golang&quot; tabindex=&quot;0&quot; data-language=&quot;golang&quot;&gt;&lt;code class=&quot;language-golang&quot;&gt;
-&lt;span class=&quot;token comment&quot;&gt;// Set your API key as an environment variable named ANTHROPIC_API_KEY&lt;/span&gt;
+&lt;pre class=&quot;language-golang&quot; tabindex=&quot;0&quot; data-language=&quot;golang&quot;&gt;&lt;code class=&quot;language-golang&quot;&gt;&lt;span class=&quot;token comment&quot;&gt;// Set your API key as an environment variable named ANTHROPIC_API_KEY&lt;/span&gt;
 &lt;span class=&quot;token comment&quot;&gt;// Ensure the necessary Go dependencies are installed&lt;/span&gt;
-
-&lt;span class=&quot;token comment&quot;&gt;// added code to measure the timing&lt;/span&gt;
 
 &lt;span class=&quot;token keyword&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;main&lt;/span&gt;
 
@@ -87,43 +125,117 @@
 
 	&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Printf&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string string&quot;&gt;&quot;Response: %+v&#92;n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;outcome&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Content&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Text&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
 	&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Printf&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string string&quot;&gt;&quot;Execution time: %s&#92;n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;duration&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
-&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
-&lt;/code&gt;&lt;/pre&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/details&gt;
 &lt;p&gt;When you run the previous code, the response might look like:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://trypanic.github.io/blog/ai-agents/img/1.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;p&gt;Let&#39;s try sending another message: &lt;code&gt;&amp;quot;Can you give me a summary about the history of AI?&amp;quot;&lt;/code&gt;&lt;/p&gt;
-&lt;p&gt;Executing the code, you will get something like:&lt;/p&gt;
+&lt;p&gt;Executing the code will give you something like:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://trypanic.github.io/blog/ai-agents/img/2.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
 &lt;h3 id=&quot;observations&quot;&gt;Observations&lt;/h3&gt;
 &lt;ol&gt;
 &lt;li&gt;
-&lt;p&gt;The response takes a few seconds to print in the console (although this is partly unrelated to the Anthropic API or its generated responses, as we will discuss further). The first example takes approximately 1.5 seconds, and the second takes approximately 10 seconds.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Response time varies significantly&lt;/strong&gt;: The first example takes approximately 1.5 seconds, while the second takes approximately 10 seconds. This variation depends on the complexity of the response.&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;In the first example, the response is more verbose than a simple &amp;quot;I&#39;m doing well, thank you!&amp;quot;. It is because the model is trying to be more helpful and informative, but it can be adjusted by changing the prompt or the model parameters (e.g., temperature, top_p, etc.).&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Verbose responses&lt;/strong&gt;: In the first example, the response is more verbose than a simple &amp;quot;I&#39;m doing well, thank you!&amp;quot; This is because the model is designed to be helpful and informative, but it can be adjusted by changing the prompt or model parameters (e.g., temperature, top_p, etc.).&lt;/p&gt;
 &lt;/li&gt;
 &lt;li&gt;
-&lt;p&gt;During this process,the execution appears to freeze until the response is received, especially in the second example, where the delay is more evident. This is critical, as it can result in a poor user experience and create the impression that the system is unresponsive.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Blocking behavior&lt;/strong&gt;: During this process, the execution appears to freeze until the response is received, especially in the second example where the delay is more evident. This creates a poor user experience and gives the impression that the system is unresponsive.&lt;/p&gt;
 &lt;/li&gt;
 &lt;/ol&gt;
 &lt;br&gt;
-&lt;p&gt;In both cases, we see a simple interaction: &lt;code&gt;input → output&lt;/code&gt;. So, is this simple interaction considered an AI Agent? You might think so, after all, you&#39;re interacting with a LLM over the Anthropic API, right? but, the short answer is absolutely not, at least, not yet!&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;&lt;em&gt;Why not?&lt;/em&gt;&lt;/strong&gt; Because the code we&#39;ve used so far only handles a single interaction with no ongoing or continuous dialogue; it doesn&#39;t retain in a memory any previous messages (stateless interaction), it doesn&#39;t take any actions on your behalf, it doesn&#39;t interact outside of its own context with external systems/tools, it doesn&#39;t understanding of goals, and there is not a decision-making involved. As such, this basic interaction is not sufficient to qualify as an AI agent.&lt;/p&gt;
-&lt;p&gt;Let&#39;s take a pause here and refactor the previous code to enhance the user experience.&lt;/p&gt;
-&lt;p&gt;See a preview of the results:&lt;/p&gt;
+&lt;p&gt;In both examples, we see a simple interaction: &lt;code&gt;input → output&lt;/code&gt;
+So, is this simple interaction considered an AI Agent? You might think so, after all, you&#39;re interacting with a LLM over the Anthropic API, right? but, the short answer is &lt;strong&gt;absolutely not!&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Why not?&lt;/strong&gt; Because the code we&#39;ve used so far only handles a single, stateless interaction with no ongoing dialogue and it is blocking. Additionally, it doesn&#39;t:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Retain any previous messages in memory&lt;/li&gt;
+&lt;li&gt;Take actions on your behalf&lt;/li&gt;
+&lt;li&gt;Interact with external systems or tools&lt;/li&gt;
+&lt;li&gt;Understand or pursue goals&lt;/li&gt;
+&lt;li&gt;Make decisions based on context or requirements&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;This basic interaction is not sufficient to qualify as an AI agent. &lt;strong&gt;Here&#39;s a simple test that proves this point:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Try sending the message: &lt;code&gt;&amp;quot;What time is it now?&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;The response will be something like: &lt;code&gt;&amp;quot;I don&#39;t have access to real-time information, so I can&#39;t tell you the current time. To find out what time it is, you could...&amp;quot;&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;This demonstrates a fundamental limitation: the system can&#39;t perform actions or access external information (core requirements for any useful AI agent).&lt;/p&gt;
+&lt;h2 id=&quot;improving-user-experience-with-streaming&quot;&gt;Improving User Experience with Streaming&lt;/h2&gt;
+&lt;p&gt;Before we add agent-like capabilities, let&#39;s address the blocking behavior issue. This won&#39;t make our system an AI agent, but it will make it feel more responsive and interactive—qualities that any good agent should have. What it means?&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://trypanic.github.io/blog/ai-agents/img/3.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Seems like a good start, right?&lt;/p&gt;
-&lt;h3 id=&quot;code-refactoring-optional-to-read&quot;&gt;Code Refactoring (optional to read)&lt;/h3&gt;
-&lt;p&gt;In this section, we&#39;ll explore how to use streaming to prevent blocking behavior.&lt;/p&gt;
-&lt;h4 id=&quot;what-is-a-stream&quot;&gt;What is a stream?&lt;/h4&gt;
-&lt;p&gt;Imagine you&#39;re filling a glass with wine. The wine bottle is made of black glass, so you can&#39;t see how much wine is left inside. As you pour, the wine flows continuously from the bottle into the glass until it&#39;s full or not, it depending on how much liquid is in the bottle (which you can&#39;t see).&lt;/p&gt;
-&lt;p&gt;This continuous flow is similar to how data can move between two systems in software. When one system sends information and the other receives it in a steady, ongoing manner, that&#39;s called a stream. A real-world example of data streaming is when you&#39;re watching a live concert online in platforms like YouTube Live, Facebook Live, Twitch, or others. These stream services continuously send video and audio data to your device in real time, just like the wine flows from the bottle, but you don&#39;t know exactly when it will stop, because you can&#39;t see how much is left.&lt;/p&gt;
-&lt;p&gt;With that context in mind, let&#39;s return to the interaction between the earlier code and the Anthropic API. In this case, neither the code nor the API is using streaming communication, both follow a traditional request-response model, which is not real time. This is by design, and it&#39;s worth noting that the Anthropic SDK supports both streaming and non-streaming communication.&lt;/p&gt;
+&lt;p&gt;Seems like a good start with a acceptable user experience, right?&lt;/p&gt;
+&lt;h3 id=&quot;what-is-streaming&quot;&gt;What is Streaming?&lt;/h3&gt;
+&lt;p&gt;Think of streaming like having a conversation with someone who speaks thoughtfully. Instead of waiting in silence until they&#39;ve formulated their entire response, they start speaking as soon as they have something to say, continuing until their thought is complete.&lt;/p&gt;
+&lt;p&gt;In our LLM context, instead of waiting for the entire response to be generated before displaying it, streaming allows us to receive and display the response as it&#39;s being generated, word by word or chunk by chunk.&lt;/p&gt;
+&lt;p&gt;Here&#39;s the refactored code using streaming:&lt;/p&gt;
 &lt;details&gt;
-&lt;summary&gt;Golang Code&lt;/summary&gt;
-&lt;pre class=&quot;language-golang&quot; tabindex=&quot;0&quot; data-language=&quot;golang&quot;&gt;&lt;code class=&quot;language-golang&quot;&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;summary&gt;Streaming Implementation&lt;/summary&gt;
+&lt;pre class=&quot;language-golang&quot; tabindex=&quot;0&quot; data-language=&quot;golang&quot;&gt;&lt;code class=&quot;language-golang&quot;&gt;&lt;span class=&quot;token keyword&quot;&gt;package&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;main&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;
+	&lt;span class=&quot;token string string&quot;&gt;&quot;context&quot;&lt;/span&gt;
+	&lt;span class=&quot;token string string&quot;&gt;&quot;fmt&quot;&lt;/span&gt;
+	&lt;span class=&quot;token string string&quot;&gt;&quot;os&quot;&lt;/span&gt;
+
+	&lt;span class=&quot;token string string&quot;&gt;&quot;github.com/anthropics/anthropic-sdk-go&quot;&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;token keyword&quot;&gt;func&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;token identifier&quot;&gt;ctx&lt;/span&gt; &lt;span class=&quot;token operator operator-assignment&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;context&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Background&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token function&quot;&gt;len&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Args&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;&amp;lt;&lt;/span&gt; &lt;span class=&quot;token number&quot;&gt;2&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Println&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string string&quot;&gt;&quot;Usage: go run main.go &#92;&quot;Your message here&#92;&quot;&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;
+	&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;token identifier&quot;&gt;message&lt;/span&gt; &lt;span class=&quot;token operator operator-assignment&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Args&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;
+	&lt;span class=&quot;token identifier&quot;&gt;client&lt;/span&gt; &lt;span class=&quot;token operator operator-assignment&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.NewClient&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Printf&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string string&quot;&gt;&quot;You: %s&#92;n&#92;nAssistant: &quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;token identifier&quot;&gt;stream&lt;/span&gt; &lt;span class=&quot;token operator operator-assignment&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;token structure-name class-name&quot;&gt;.Messages&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.NewStreaming&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token identifier&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.MessageNewParams&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;token identifier&quot;&gt;Model&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;     &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.ModelClaude4Sonnet20250514&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;token identifier&quot;&gt;MaxTokens&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token type&quot;&gt;int64&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;token identifier&quot;&gt;Messages&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token slice&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token type&quot;&gt;anthropic&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.MessageParam&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.NewUserMessage&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.NewTextBlock&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token identifier&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+		&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+
+	&lt;span class=&quot;token keyword&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Next&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;token identifier&quot;&gt;event&lt;/span&gt; &lt;span class=&quot;token operator operator-assignment&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Current&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Type&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;token string string&quot;&gt;&quot;content_block_delta&quot;&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+			&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;delta&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;ok&lt;/span&gt; &lt;span class=&quot;token operator operator-assignment&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;event&lt;/span&gt;&lt;span class=&quot;token structure-name class-name&quot;&gt;.ContentBlockDelta&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Delta&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.TextDelta&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;ok&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+				&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Print&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;delta&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Text&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+			&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+		&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+	&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;token keyword&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;token operator operator-assignment&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;stream&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Err&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;;&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;token operator&quot;&gt;!=&lt;/span&gt; &lt;span class=&quot;token nil&quot;&gt;nil&lt;/span&gt; &lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Printf&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string string&quot;&gt;&quot;&#92;nError: %v&#92;n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;err&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+		&lt;span class=&quot;token keyword&quot;&gt;return&lt;/span&gt;
+	&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;
+
+	&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Println&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string string&quot;&gt;&quot;&#92;n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/details&gt;
+&lt;p&gt;This streaming implementation provides immediate feedback and a more natural, conversational feel. As you can see in the third image, the response appears progressively, making the interaction feel more alive and responsive.&lt;/p&gt;
+&lt;h3 id=&quot;why-this-still-isnt-an-ai-agent&quot;&gt;Why This Still Isn&#39;t an AI Agent&lt;/h3&gt;
+&lt;p&gt;While streaming improves the user experience dramatically, our system still lacks the core characteristics of an AI agent:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;No memory&lt;/strong&gt;: Each interaction is independent&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No tools&lt;/strong&gt;: Can&#39;t perform actions beyond generating text&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No goal-oriented behavior&lt;/strong&gt;: Doesn&#39;t work toward specific objectives&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;No decision-making&lt;/strong&gt;: Doesn&#39;t choose between different courses of action&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;In the next parts of this series, we&#39;ll add these missing pieces step by step that will transform our simple LLM interaction into a true AI agent.&lt;/p&gt;
+&lt;h2 id=&quot;whats-next&quot;&gt;What&#39;s Next&lt;/h2&gt;
+&lt;p&gt;In the upcoming posts, we&#39;ll explore:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Adding Conversation Memory&lt;/strong&gt; - Making our agent remember previous interactions&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Implementing Custom Tools&lt;/strong&gt; - Giving our agent the ability to perform actions with external systems&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Decision Making&lt;/strong&gt; - Teaching our agent when and how to use different tools&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Model Context Protocol (MCP)&lt;/strong&gt; - Giving our agent the ability to perform actions with external systems but with a standarized way&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Each step will bring us closer to a system that truly deserves the title &amp;quot;AI Agent.&amp;quot;&lt;/p&gt;
 </content>
   </entry>
   <entry>
