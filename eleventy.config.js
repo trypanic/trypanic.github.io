@@ -63,6 +63,8 @@ export default async function (eleventyConfig) {
 	eleventyConfig.addPlugin(InputPathToUrlTransformPlugin);
 	eleventyConfig.addPlugin(pluginFilters);
 	eleventyConfig.addPlugin(pluginMermaid, {
+		mermaid_js_src:
+			"https://unpkg.com/mermaid@11.9.0/dist/mermaid.esm.min.mjs",
 		mermaid_config: {
 			startOnLoad: true,
 			theme: "neutral",
