@@ -7,9 +7,9 @@ tags: ["ai-agents", "LLMS", "golang"]
 
 - [Introduction](#introduction)
 - [What is an AI Agent?](#what-is-an-ai-agent-)
-- [A Simple Interaction with an LLM (One Input, One Output)](#a-simple-interaction-with-an-llm--one-input--one-output-)
+- [Single LLM Interaction - Blocking (One Input, One Output)](#a-simple-interaction-with-an-llm--one-input--one-output-)
   * [Observations](#observations)
-- [Improving User Experience with Streaming](#improving-user-experience-with-streaming)
+- [Single LLM Interaction - Non-Blocking (One Input, One Output)](#improving-user-experience-with-streaming)
   * [What is Streaming?](#what-is-streaming-)
   * [Why This Still Isn't an AI Agent](#why-this-still-isn-t-an-ai-agent)
 - [What's Next](#what-s-next)
@@ -24,33 +24,70 @@ My goal is to share everything I've learned about how AI agents work under the h
 
 Below you can see a general roadmap to give you an idea of what I'll be writing about.
 
-
 ```mermaid
-graph TD
-    A[Basic LLM Interaction] --> B[Streaming for Better UX]
-    B --> C[Conversation Memory]
-    C --> D[Custom Tool Integration]
-    D --> E[Decision Making Logic]
-    E --> F[MCP Integration]
-    F --> G[Complete AI Agent]
 
-    A1[❌ Single request/response<br/>❌ No state<br/>❌ Blocking behavior] --> A
-    B1[✅ Real-time responses<br/>✅ Better user experience<br/>❌ Still no agent behavior] --> B
-    C1[✅ Remembers conversations<br/>✅ Context awareness<br/>❌ Can't take actions] --> C
-    D1[✅ Can use external tools<br/>✅ File operations, APIs<br/>❌ No smart tool selection] --> D
-    E1[✅ Chooses appropriate tools<br/>✅ Goal-oriented behavior<br/>❌ Limited external integrations] --> E
-    F1[✅ Rich external integrations<br/>✅ Database, APIs, services<br/>✅ Standardized protocols] --> F
-    G1[✅ Full autonomy<br/>✅ Complex task completion<br/>✅ Learning and adaptation] --> G
+    block-beta
+    columns 4
+    p1>"Part1"] Stage1["Single LLM Interaction<br/>Blocking"] id1<[" "]>(right) Stage2["Single LLM Interaction<br/>Non-Blocking / Streaming"]
 
-    style A fill:#ffebee
-    style B fill:#fff3e0
-    style C fill:#e8f5e8
-    style D fill:#e3f2fd
-    style E fill:#f3e5f5
-    style F fill:#e0f2f1
-    style G fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+    p2>"Part2"] Stage3["Continuous LLM Interaction<br/>No Memory"] id3<[" "]>(right) Stage4["Continuous LLM Interaction<br/>With Memory"]
+
+    p3>"Part3"] Stage5["LLM Limitations & Context Boundaries"] id5<[" "]>(right) Stage6["Custom Tool Integration / Function Calls"]
+
+    p4>"Part4"] Stage7["Challenges with Function Calls Approaches"] id7<[" "]>(right) Stage8["Model Context Protocol"]
+
+    p5>"Part5"] Stage9["Model Context Protocol vs Function Calls"] id9<[" "]>(right) Stage10["AI Agent in Practice with MCP"]
+
+    classDef parts fill:#ffe4b780,stroke-width:0px;
+    classDef s1 fill:#ffe0e080,stroke-width:0px;
+    classDef s2 fill:#fbe3e1,stroke-width:0px;
+    classDef s3 fill:#f1f7e1,stroke-width:0px;
+    classDef s4 fill:#faf3d1,stroke-width:0px;
+    classDef s5 fill:#e9f5f6,stroke-width:0px;
+    classDef s6 fill:#f6e9f3,stroke-width:0px;
+    classDef s7 fill:#e6f4ed,stroke-width:0px;
+    classDef s8 fill:#fbeee5,stroke-width:0px;
+    classDef s9 fill:#eee6d5,stroke-width:0px;
+    classDef s10 fill:#e9e3d1,stroke-width:0px
+
+    class p1,p2,p3,p4,p5,p6,p7,p8,p9,p10 parts
+    class Stage1 s1
+    class Stage2 s2
+    class Stage3 s3
+    class Stage4 s4
+    class Stage5 s5
+    class Stage6 s6
+    class Stage7 s7
+    class Stage8 s8
+    class Stage9 s9
+    class Stage10 s10
 ```
 
+<!--
+1 introduction
+2 Prerequisites
+3 Environment Setup
+4 what is an AI Agent?
+5 Single LLM Interaction - Blocking
+6 Single LLM Interaction - Non-Blocking (Streaming)
+7 Dynamic Interaction (No Memory)
+8 Dynamic Interaction (Memory)
+9 LLM Limitations & Context Boundaries
+  9.1 Knowledge Cutoff: Can't access recent information
+  9.2 No External Actions: Can't send emails, make API calls, access files
+  9.3 No Real-time Data: Can't get weather, stock prices, etc.
+  9.4 Computational Limits: Struggles with complex math, can't run code
+  9.5 No Persistence: Can't save data between sessions (beyond conversation memory)
+10 Custom Tool Integration (Functions Calling & External Actions)
+11 Drawbacks of Function Calls
+12 Model Context Protocol
+13 Function Calls vs Model Context Protocol
+14 AI Agent in Practice
+	14.1 Simple Tool (calculation, web request)
+	14.2 Complex Tool (file operations, database queries)
+
+```
+-->
 <br />
 
 **_Disclaimer_**: I'm not an expert in AI Agents, LLMs, ML, and AI in general. This series is based on my personal learning journey, and everything I share comes from reading, research, and hands-on experimentation. Use it as a learning resource. The code examples are for educational purposes and are not production-ready.
@@ -71,12 +108,14 @@ Both are clear explanations of what an AI Agent is. But to truly understand what
 
 ## A Simple Interaction with an LLM (One Input, One Output)
 
-Let's start with the most basic form of interaction: you send a message to an LLM through the Anthropic API using the Anthropic SDK. The API responds with a generated message. Something like this:
+Let's start with the most basic form of interaction: you send a prompt (a single message, specific instructions, query, and so on) to an LLM through the Anthropic API using the Anthropic SDK. The API responds with a generated message.
 
 ```mermaid
-sequenceDiagram
-    Client (Anthropic SDK)->>Anthropic API: prompt
-    Anthropic API-->>Client (Anthropic SDK): response
+flowchart LR
+  A[Client Anthropic SDK] e1@-->| prompt |B[Anthropic API]
+  B e2@--> | response |A
+  e1@{ animation: fast }
+  e2@{ animation: fast }
 ```
 
 For example, you might send: `"Hello, how are you?"`
@@ -133,6 +172,19 @@ func main() {
 }
 ```
 
+The most relevant part of the code is:
+
+```golang
+outcome, err := client.Messages.New(ctx, anthropic.MessageNewParams{
+	Model:     anthropic.ModelClaude4Sonnet20250514,
+	MaxTokens: int64(1024),
+	Messages: []anthropic.MessageParam{
+		anthropic.NewUserMessage(anthropic.NewTextBlock(message)),
+	},
+})
+```
+Where explicitly setting the model and parameters is crucial for controlling the behavior of the AI agent.
+
 </details>
 
 When you run the previous code, the response might look like:
@@ -175,15 +227,15 @@ This demonstrates a fundamental limitation: the system can't perform actions or 
 
 ## Improving User Experience with Streaming
 
-Before we add agent-like capabilities, let's address the blocking behavior issue. This won't make our system an AI agent, but it will make it feel more responsive and interactive—qualities that any good agent should have. What it means?
+Before we add agent-like capabilities, let's address the blocking behavior issue. This won't make our system an AI agent, but it will make it feel more responsive and interactive, qualities that any good agent should have. What it means?
 
 ![](../img/3.webp)
 
-Seems like a good start with a acceptable user experience, right?
+Seems like a good start with an acceptable user experience, right?
 
 ### What is Streaming?
 
-Think of streaming like having a conversation with someone who speaks thoughtfully. Instead of waiting in silence until they've formulated their entire response, they start speaking as soon as they have something to say, continuing until their thought is complete.
+Think of streaming like talking to someone who starts speaking as soon as they have an idea, instead of waiting to plan out everything they’re going to say. They share their thoughts bit by bit, as they come, until they’ve said everything.
 
 In our LLM context, instead of waiting for the entire response to be generated before displaying it, streaming allows us to receive and display the response as it's being generated, word by word or chunk by chunk.
 
@@ -255,15 +307,18 @@ While streaming improves the user experience dramatically, our system still lack
 - **No goal-oriented behavior**: Doesn't work toward specific objectives
 - **No decision-making**: Doesn't choose between different courses of action
 
-In the next parts of this series, we'll add these missing pieces step by step that will transform our simple LLM interaction into a true AI agent.
+In the next parts of this series, we'll add these missing pieces step by step that will transform our single LLM interaction into a true AI agent.
 
 ## What's Next
 
 In the upcoming posts, we'll explore:
 
-1. **Adding Conversation Memory** - Making our agent remember previous interactions
-2. **Implementing Custom Tools** - Giving our agent the ability to perform actions with external systems
-3. **Decision Making** - Teaching our agent when and how to use different tools
-4. **Model Context Protocol (MCP)** - Giving our agent the ability to perform actions with external systems but with a standarized way
+1. **Continues LLM Interaction - No Memory** - Making a fluent conversation with the LLM 2. **Continues LLM Interaction - With Memory** - Making a fluent conversation with the LLM remembering previous interactions
+3. **LLM Limitations & Context Boundaries** - Understanding the limitations of the previous interactions
+4. **Custom Tools / Function Calls** - Adding to LLM the ability to perform actions with external systems
+5. **Challenges with Function Calls Approaches**
+6. **Model Context Protocol (MCP)**
+7. **Model Context Protocol vs Function Calls**
+8. **AI Agent in Practice with MCP**
 
 Each step will bring us closer to a system that truly deserves the title "AI Agent."
