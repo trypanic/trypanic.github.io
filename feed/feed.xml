@@ -18,12 +18,12 @@
     <content type="html">&lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#introduction&quot;&gt;Introduction&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#what-is-an-ai-agent-&quot;&gt;What is an AI Agent?&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#a-simple-interaction-with-an-llm--one-input--one-output-&quot;&gt;A Simple Interaction with an LLM (One Input, One Output)&lt;/a&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#a-simple-interaction-with-an-llm--one-input--one-output-&quot;&gt;Single LLM Interaction - Blocking (One Input, One Output)&lt;/a&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#observations&quot;&gt;Observations&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#improving-user-experience-with-streaming&quot;&gt;Improving User Experience with Streaming&lt;/a&gt;
+&lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#improving-user-experience-with-streaming&quot;&gt;Single LLM Interaction - Non-Blocking (One Input, One Output)&lt;/a&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#what-is-streaming-&quot;&gt;What is Streaming?&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://trypanic.github.io/blog/ai-agents/introduction/#why-this-still-isn-t-an-ai-agent&quot;&gt;Why This Still Isn&#39;t an AI Agent&lt;/a&gt;&lt;/li&gt;
@@ -36,30 +36,68 @@
 &lt;p&gt;We&#39;ll begin with basic interactions with a large language model (LLM) and gradually progress toward a more complete AI Agent by incorporating conversation memory, tools, decision-making capabilities, MCP (Model Context Protocol), and more.&lt;/p&gt;
 &lt;p&gt;My goal is to share everything I&#39;ve learned about how AI agents work under the hood, and to make that understanding accessible to others who are interested in the same topic.&lt;/p&gt;
 &lt;p&gt;Below you can see a general roadmap to give you an idea of what I&#39;ll be writing about.&lt;/p&gt;
-&lt;pre class=&quot;mermaid&quot;&gt;graph TD
-    A[Basic LLM Interaction] --&amp;#x3E; B[Streaming for Better UX]
-    B --&amp;#x3E; C[Conversation Memory]
-    C --&amp;#x3E; D[Custom Tool Integration]
-    D --&amp;#x3E; E[Decision Making Logic]
-    E --&amp;#x3E; F[MCP Integration]
-    F --&amp;#x3E; G[Complete AI Agent]
+&lt;pre class=&quot;mermaid&quot;&gt;
+    block-beta
+    columns 4
+    p1&amp;#x3E;&amp;#x22;Part1&amp;#x22;] Stage1[&amp;#x22;Single LLM Interaction&amp;#x3C;br/&amp;#x3E;Blocking&amp;#x22;] id1&amp;#x3C;[&amp;#x22; &amp;#x22;]&amp;#x3E;(right) Stage2[&amp;#x22;Single LLM Interaction&amp;#x3C;br/&amp;#x3E;Non-Blocking / Streaming&amp;#x22;]
 
-    A1[&amp;#x274C; Single request/response&amp;#x3C;br/&amp;#x3E;&amp;#x274C; No state&amp;#x3C;br/&amp;#x3E;&amp;#x274C; Blocking behavior] --&amp;#x3E; A
-    B1[&amp;#x2705; Real-time responses&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Better user experience&amp;#x3C;br/&amp;#x3E;&amp;#x274C; Still no agent behavior] --&amp;#x3E; B
-    C1[&amp;#x2705; Remembers conversations&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Context awareness&amp;#x3C;br/&amp;#x3E;&amp;#x274C; Can&amp;#x27;t take actions] --&amp;#x3E; C
-    D1[&amp;#x2705; Can use external tools&amp;#x3C;br/&amp;#x3E;&amp;#x2705; File operations, APIs&amp;#x3C;br/&amp;#x3E;&amp;#x274C; No smart tool selection] --&amp;#x3E; D
-    E1[&amp;#x2705; Chooses appropriate tools&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Goal-oriented behavior&amp;#x3C;br/&amp;#x3E;&amp;#x274C; Limited external integrations] --&amp;#x3E; E
-    F1[&amp;#x2705; Rich external integrations&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Database, APIs, services&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Standardized protocols] --&amp;#x3E; F
-    G1[&amp;#x2705; Full autonomy&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Complex task completion&amp;#x3C;br/&amp;#x3E;&amp;#x2705; Learning and adaptation] --&amp;#x3E; G
+    p2&amp;#x3E;&amp;#x22;Part2&amp;#x22;] Stage3[&amp;#x22;Continuous LLM Interaction&amp;#x3C;br/&amp;#x3E;No Memory&amp;#x22;] id3&amp;#x3C;[&amp;#x22; &amp;#x22;]&amp;#x3E;(right) Stage4[&amp;#x22;Continuous LLM Interaction&amp;#x3C;br/&amp;#x3E;With Memory&amp;#x22;]
 
-    style A fill:#ffebee
-    style B fill:#fff3e0
-    style C fill:#e8f5e8
-    style D fill:#e3f2fd
-    style E fill:#f3e5f5
-    style F fill:#e0f2f1
-    style G fill:#e8f5e8,stroke:#4caf50,stroke-width:3px
+    p3&amp;#x3E;&amp;#x22;Part3&amp;#x22;] Stage5[&amp;#x22;LLM Limitations &amp;#x26; Context Boundaries&amp;#x22;] id5&amp;#x3C;[&amp;#x22; &amp;#x22;]&amp;#x3E;(right) Stage6[&amp;#x22;Custom Tool Integration / Function Calls&amp;#x22;]
+
+    p4&amp;#x3E;&amp;#x22;Part4&amp;#x22;] Stage7[&amp;#x22;Challenges with Function Calls Approaches&amp;#x22;] id7&amp;#x3C;[&amp;#x22; &amp;#x22;]&amp;#x3E;(right) Stage8[&amp;#x22;Model Context Protocol&amp;#x22;]
+
+    p5&amp;#x3E;&amp;#x22;Part5&amp;#x22;] Stage9[&amp;#x22;Model Context Protocol vs Function Calls&amp;#x22;] id9&amp;#x3C;[&amp;#x22; &amp;#x22;]&amp;#x3E;(right) Stage10[&amp;#x22;AI Agent in Practice with MCP&amp;#x22;]
+
+    classDef parts fill:#ffe4b780,stroke-width:0px;
+    classDef s1 fill:#ffe0e080,stroke-width:0px;
+    classDef s2 fill:#fbe3e1,stroke-width:0px;
+    classDef s3 fill:#f1f7e1,stroke-width:0px;
+    classDef s4 fill:#faf3d1,stroke-width:0px;
+    classDef s5 fill:#e9f5f6,stroke-width:0px;
+    classDef s6 fill:#f6e9f3,stroke-width:0px;
+    classDef s7 fill:#e6f4ed,stroke-width:0px;
+    classDef s8 fill:#fbeee5,stroke-width:0px;
+    classDef s9 fill:#eee6d5,stroke-width:0px;
+    classDef s10 fill:#e9e3d1,stroke-width:0px
+
+    class p1,p2,p3,p4,p5,p6,p7,p8,p9,p10 parts
+    class Stage1 s1
+    class Stage2 s2
+    class Stage3 s3
+    class Stage4 s4
+    class Stage5 s5
+    class Stage6 s6
+    class Stage7 s7
+    class Stage8 s8
+    class Stage9 s9
+    class Stage10 s10
 &lt;/pre&gt;
+&lt;!--
+1 introduction
+2 Prerequisites
+3 Environment Setup
+4 what is an AI Agent?
+5 Single LLM Interaction - Blocking
+6 Single LLM Interaction - Non-Blocking (Streaming)
+7 Dynamic Interaction (No Memory)
+8 Dynamic Interaction (Memory)
+9 LLM Limitations &amp; Context Boundaries
+  9.1 Knowledge Cutoff: Can&#39;t access recent information
+  9.2 No External Actions: Can&#39;t send emails, make API calls, access files
+  9.3 No Real-time Data: Can&#39;t get weather, stock prices, etc.
+  9.4 Computational Limits: Struggles with complex math, can&#39;t run code
+  9.5 No Persistence: Can&#39;t save data between sessions (beyond conversation memory)
+10 Custom Tool Integration (Functions Calling &amp; External Actions)
+11 Drawbacks of Function Calls
+12 Model Context Protocol
+13 Function Calls vs Model Context Protocol
+14 AI Agent in Practice
+	14.1 Simple Tool (calculation, web request)
+	14.2 Complex Tool (file operations, database queries)
+
+```
+--&gt;
 &lt;br&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;Disclaimer&lt;/em&gt;&lt;/strong&gt;: I&#39;m not an expert in AI Agents, LLMs, ML, and AI in general. This series is based on my personal learning journey, and everything I share comes from reading, research, and hands-on experimentation. Use it as a learning resource. The code examples are for educational purposes and are not production-ready.&lt;/p&gt;
 &lt;br&gt;
@@ -75,10 +113,12 @@
 &lt;/blockquote&gt;
 &lt;p&gt;Both are clear explanations of what an AI Agent is. But to truly understand what&#39;s happening under the hood, let&#39;s break it all down from scratch. After exploring the concepts step by step, I&#39;ll share my own perspective. Then, you&#39;ll have enough context to define what an AI Agent really means in your own words.&lt;/p&gt;
 &lt;h2 id=&quot;a-simple-interaction-with-an-llm-one-input-one-output&quot;&gt;A Simple Interaction with an LLM (One Input, One Output)&lt;/h2&gt;
-&lt;p&gt;Let&#39;s start with the most basic form of interaction: you send a message to an LLM through the Anthropic API using the Anthropic SDK. The API responds with a generated message. Something like this:&lt;/p&gt;
-&lt;pre class=&quot;mermaid&quot;&gt;sequenceDiagram
-    Client (Anthropic SDK)-&amp;#x3E;&amp;#x3E;Anthropic API: prompt
-    Anthropic API--&amp;#x3E;&amp;#x3E;Client (Anthropic SDK): response
+&lt;p&gt;Let&#39;s start with the most basic form of interaction: you send a prompt (a single message, specific instructions, query, and so on) to an LLM through the Anthropic API using the Anthropic SDK. The API responds with a generated message.&lt;/p&gt;
+&lt;pre class=&quot;mermaid&quot;&gt;flowchart LR
+  A[Client Anthropic SDK] e1@--&amp;#x3E;| prompt |B[Anthropic API]
+  B e2@--&amp;#x3E; | response |A
+  e1@{ animation: fast }
+  e2@{ animation: fast }
 &lt;/pre&gt;
 &lt;p&gt;For example, you might send: &lt;code&gt;&amp;quot;Hello, how are you?&amp;quot;&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;And the model might respond with: &lt;code&gt;&amp;quot;I&#39;m doing well, thank you!&amp;quot;&lt;/code&gt;&lt;/p&gt;
@@ -126,6 +166,15 @@
 	&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Printf&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string string&quot;&gt;&quot;Response: %+v&#92;n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;outcome&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Content&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Text&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
 	&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.Printf&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token string string&quot;&gt;&quot;Execution time: %s&#92;n&quot;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;duration&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;
 &lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The most relevant part of the code is:&lt;/p&gt;
+&lt;pre class=&quot;language-golang&quot; tabindex=&quot;0&quot; data-language=&quot;golang&quot;&gt;&lt;code class=&quot;language-golang&quot;&gt;&lt;span class=&quot;token identifier&quot;&gt;outcome&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token identifier&quot;&gt;err&lt;/span&gt; &lt;span class=&quot;token operator operator-assignment&quot;&gt;:=&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;client&lt;/span&gt;&lt;span class=&quot;token structure-name class-name&quot;&gt;.Messages&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.New&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token identifier&quot;&gt;ctx&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.MessageNewParams&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+	&lt;span class=&quot;token identifier&quot;&gt;Model&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt;     &lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.ModelClaude4Sonnet20250514&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;token identifier&quot;&gt;MaxTokens&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token type&quot;&gt;int64&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token number&quot;&gt;1024&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;token identifier&quot;&gt;Messages&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;token slice&quot;&gt;&lt;span class=&quot;token punctuation&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;token type&quot;&gt;anthropic&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.MessageParam&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;{&lt;/span&gt;
+		&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.NewUserMessage&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token chained-access&quot;&gt;&lt;span class=&quot;token namespace&quot;&gt;anthropic&lt;/span&gt;&lt;span class=&quot;token property property&quot;&gt;.NewTextBlock&lt;/span&gt;&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;token identifier&quot;&gt;message&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+	&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;token punctuation&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;token punctuation&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Where explicitly setting the model and parameters is crucial for controlling the behavior of the AI agent.&lt;/p&gt;
 &lt;/details&gt;
 &lt;p&gt;When you run the previous code, the response might look like:&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://trypanic.github.io/blog/ai-agents/img/1.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
@@ -160,11 +209,11 @@ So, is this simple interaction considered an AI Agent? You might think so, after
 &lt;p&gt;The response will be something like: &lt;code&gt;&amp;quot;I don&#39;t have access to real-time information, so I can&#39;t tell you the current time. To find out what time it is, you could...&amp;quot;&lt;/code&gt;&lt;/p&gt;
 &lt;p&gt;This demonstrates a fundamental limitation: the system can&#39;t perform actions or access external information (core requirements for any useful AI agent).&lt;/p&gt;
 &lt;h2 id=&quot;improving-user-experience-with-streaming&quot;&gt;Improving User Experience with Streaming&lt;/h2&gt;
-&lt;p&gt;Before we add agent-like capabilities, let&#39;s address the blocking behavior issue. This won&#39;t make our system an AI agent, but it will make it feel more responsive and interactive—qualities that any good agent should have. What it means?&lt;/p&gt;
+&lt;p&gt;Before we add agent-like capabilities, let&#39;s address the blocking behavior issue. This won&#39;t make our system an AI agent, but it will make it feel more responsive and interactive, qualities that any good agent should have. What it means?&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;https://trypanic.github.io/blog/ai-agents/img/3.webp&quot; alt=&quot;&quot;&gt;&lt;/p&gt;
-&lt;p&gt;Seems like a good start with a acceptable user experience, right?&lt;/p&gt;
+&lt;p&gt;Seems like a good start with an acceptable user experience, right?&lt;/p&gt;
 &lt;h3 id=&quot;what-is-streaming&quot;&gt;What is Streaming?&lt;/h3&gt;
-&lt;p&gt;Think of streaming like having a conversation with someone who speaks thoughtfully. Instead of waiting in silence until they&#39;ve formulated their entire response, they start speaking as soon as they have something to say, continuing until their thought is complete.&lt;/p&gt;
+&lt;p&gt;Think of streaming like talking to someone who starts speaking as soon as they have an idea, instead of waiting to plan out everything they’re going to say. They share their thoughts bit by bit, as they come, until they’ve said everything.&lt;/p&gt;
 &lt;p&gt;In our LLM context, instead of waiting for the entire response to be generated before displaying it, streaming allows us to receive and display the response as it&#39;s being generated, word by word or chunk by chunk.&lt;/p&gt;
 &lt;p&gt;Here&#39;s the refactored code using streaming:&lt;/p&gt;
 &lt;details&gt;
@@ -226,14 +275,17 @@ So, is this simple interaction considered an AI Agent? You might think so, after
 &lt;li&gt;&lt;strong&gt;No goal-oriented behavior&lt;/strong&gt;: Doesn&#39;t work toward specific objectives&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;No decision-making&lt;/strong&gt;: Doesn&#39;t choose between different courses of action&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;In the next parts of this series, we&#39;ll add these missing pieces step by step that will transform our simple LLM interaction into a true AI agent.&lt;/p&gt;
+&lt;p&gt;In the next parts of this series, we&#39;ll add these missing pieces step by step that will transform our single LLM interaction into a true AI agent.&lt;/p&gt;
 &lt;h2 id=&quot;whats-next&quot;&gt;What&#39;s Next&lt;/h2&gt;
 &lt;p&gt;In the upcoming posts, we&#39;ll explore:&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;Adding Conversation Memory&lt;/strong&gt; - Making our agent remember previous interactions&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Implementing Custom Tools&lt;/strong&gt; - Giving our agent the ability to perform actions with external systems&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Decision Making&lt;/strong&gt; - Teaching our agent when and how to use different tools&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Model Context Protocol (MCP)&lt;/strong&gt; - Giving our agent the ability to perform actions with external systems but with a standarized way&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Continues LLM Interaction - No Memory&lt;/strong&gt; - Making a fluent conversation with the LLM 2. &lt;strong&gt;Continues LLM Interaction - With Memory&lt;/strong&gt; - Making a fluent conversation with the LLM remembering previous interactions&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;LLM Limitations &amp;amp; Context Boundaries&lt;/strong&gt; - Understanding the limitations of the previous interactions&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Custom Tools / Function Calls&lt;/strong&gt; - Adding to LLM the ability to perform actions with external systems&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Challenges with Function Calls Approaches&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Model Context Protocol (MCP)&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Model Context Protocol vs Function Calls&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;AI Agent in Practice with MCP&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;Each step will bring us closer to a system that truly deserves the title &amp;quot;AI Agent.&amp;quot;&lt;/p&gt;
 </content>
