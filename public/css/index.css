@@ -435,11 +435,18 @@ blockquote {
 [id^="mermaid-"] .node path,
 [id^="mermaid-"] line {
 	fill: var(--theme-bg) !important;
+
 	stroke: var(--background-dark) !important;
 	stroke-width: 1px !important;
 	font-size: 12px !important;
 }
 
+[id^="mermaid-"] .edgeLabel p {
+	background-color: transparent !important;
+}
+[id^="mermaid-"] .nodeLabel p {
+	color: var(--background-dark) !important;
+}
 /* =============================
    Media Queries (Mobile First)
    ============================= */
@@ -474,9 +481,9 @@ blockquote {
 	}
 	body {
 		padding: 0;
-		max-width: 45em;
+		max-width: 60em;
 		margin: 0 auto;
-		font-size: 15px;
+		font-size: 16px;
 	}
 	header {
 		flex-direction: row;
