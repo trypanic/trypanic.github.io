@@ -203,7 +203,7 @@ Executing the code will give you something like:
 
 2. **Verbose responses**: In the first example, the response is more verbose than a simple "I'm doing well, thank you!" This is because the model is designed to be helpful and informative, but it can be adjusted by changing the prompt or model parameters (e.g., temperature, top_p, etc.).
 
-3. **Blocking behavior**: During this process, the execution appears to freeze until the response is received, especially in the second example where the delay is more evident. This creates a poor user experience and gives the impression that the system is unresponsive.
+3. **Blocking behavior**: During this process, the execution appears to freeze until the response is received, particularly in the second example, where the delay is more evident. When a user is directly interacting with the system, this results in a poor user experience and may give the impression that the application is unresponsive. However, when the process runs in the background, this delay is generally inconsequential, but it all depends on the type of application you are building.
 
 <br />
 
