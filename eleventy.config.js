@@ -39,6 +39,7 @@ export default async function (eleventyConfig) {
 	// Passthroughs
 	eleventyConfig.addPassthroughCopy(`${CONTENT_DIR}/feed/${FEED_STYLESHEET}`);
 	eleventyConfig.addPassthroughCopy(BLOG_IMAGES_GLOB);
+	eleventyConfig.addPassthroughCopy("./CNAME");
 
 	// Watch targets
 	eleventyConfig.addWatchTarget(`${CONTENT_DIR}/blog`);
