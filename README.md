@@ -4,6 +4,11 @@ A personal blog built using Eleventy ([11ty](https://www.11ty.dev/)), based on t
 
 ## About This Project
 
+For coding-agent guidance, build commands, and shared skill setup, see
+[AGENTS.md](AGENTS.md). After installing [Skillshare](https://github.com/runkids/skillshare),
+run `skillshare install -p && skillshare sync -p` from the repository root to
+restore the configured skills for Codex, Claude Code, and GitHub Copilot.
+
 This project started with [eleventy-base-blog](https://github.com/11ty/eleventy-base-blog) and evolved into a custom blog system with a redesigned layout, streamlined folder structure, minified CSS output, and improved responsiveness.
 
 - 🎨 Gruvbox color palette design

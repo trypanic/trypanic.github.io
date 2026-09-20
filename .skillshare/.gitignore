@@ -1,0 +1,14 @@
+# BEGIN SKILLSHARE MANAGED - DO NOT EDIT
+logs/
+trash/
+backups/
+skills/anti-ui-slop/
+skills/chrome-devtools/
+skills/conventional-branch/
+skills/git-commit/
+skills/conventional-commit/
+skills/frontend-design/
+# END SKILLSHARE MANAGED
+
+# Local installation metadata; source URLs are tracked in config.yaml.
+skills/.metadata.json

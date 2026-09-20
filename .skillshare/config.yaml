@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/runkids/skillshare/main/schemas/project-config.schema.json
+targets:
+  - codex
+  - claude
+  - copilot
+skills:
+  - name: anti-ui-slop
+    source: https://github.com/github/awesome-copilot/tree/4f4796f0bf30e105700f97ed8408c12b6aa95e06/skills/anti-ui-slop
+  - name: chrome-devtools
+    source: https://github.com/github/awesome-copilot/tree/4f4796f0bf30e105700f97ed8408c12b6aa95e06/skills/chrome-devtools
+  - name: conventional-branch
+    source: https://github.com/github/awesome-copilot/tree/4f4796f0bf30e105700f97ed8408c12b6aa95e06/skills/conventional-branch
+  - name: git-commit
+    source: https://github.com/github/awesome-copilot/tree/4f4796f0bf30e105700f97ed8408c12b6aa95e06/skills/git-commit
+  - name: conventional-commit
+    source: https://github.com/github/awesome-copilot/tree/HEAD/skills/conventional-commit
+  - name: frontend-design
+    source: https://github.com/anthropics/skills/tree/main/skills/frontend-design
+ignore:
+  - .DS_Store
+  - .git/
+  - __pycache__/
+audit:
+  block_threshold: CRITICAL
