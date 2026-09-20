@@ -77,9 +77,19 @@ Documentation-only changes need a diff/command review, not a new test framework.
 ## Git and deployment
 
 Check `git status` before editing and preserve existing work. Stage only files
-for the current task. Use the conventional-branch skill when creating a branch
-and the commit skills when a commit is requested; installing them does not mean
-every task should create a branch or commit.
+for the current task.
+
+Before starting any new change, read and apply the `conventional-branch` skill
+and create a task branch instead of editing directly on `main`. Use
+`<type>/<description>` with an appropriate prefix (`feature/`, `bugfix/`,
+`hotfix/`, `release/`, or `chore/`) and a concise lowercase kebab-case description,
+such as `chore/update-agent-guidance`. Follow the skill's naming rules for release
+versions. Reuse the current task branch for follow-up changes to the same task;
+do not create a new branch for every iteration. Explicit user instructions about
+branch selection take precedence.
+
+Use the commit skills when a commit is requested. Creating a task branch does
+not itself authorize committing or pushing changes.
 
 CI runs on pushes to `main` and manual dispatch; its deployment step is restricted
 to `main`. Pushing there can publish the site. Keep deployment changes explicit.
